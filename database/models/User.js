@@ -1,41 +1,75 @@
-const { Model, DataTypes } = require('sequelize')
+const { Sequelize, Model, DataTypes } = require('sequelize');
+const bcrypt = require('bcrypt');
 
-const { db } = require('../db')
+const config = require('../config')
 
-class User extends Model {}
+const db = new Sequelize(config)
+
+const saltRounds = 8;
+
+const hashPassword = async raw => {
+    const salt = await bcrypt.genSalt(saltRounds);
+    return await bcrypt.hash(raw, salt);
+};
 
 
-const userColumns = {
+class User extends Model {
+    static hashPassword = hashPassword;
+
+    async checkPassword(raw) {
+        return await bcrypt.compare(raw, this.password);
+    }
+
+    get fullName() {
+        return `${this.firstName} ${this.lastName}`;
+    }
+}
+
+
+const userAttributes = {
+    id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        unique: true,
+        primaryKey: true
+    },
     username: {
         type: DataTypes.STRING,
-        null: false,
-        maxlength: 50,
+        allowNull: false,
+        maxLength: 50,
     },
-    firstname: {
+    firstName: {
         type: DataTypes.STRING,
-        null: false,
+        allowNull: false,
     },
-    lastname: {
+    lastName: {
         type: DataTypes.STRING,
-        null: false,
+        allowNull: false,
     },
     password: {
         type: DataTypes.STRING,
-        null: false,
+        allowNull: false,
+        async set(value) {
+          this.setDataValue('password', await hashPassword(value));
+        }
     },
     isActive: {
         type: DataTypes.BOOLEAN,
-        default: true
-    }
+        defaultValue: true
+    },
 };
 
 const userOptions = {
     sequelize: db,
-    freezeTableName: true
-}
+    tableName: 'users'
+    // indexes: [
+    //     {
+    //         unique: true,
+    //         field: 'username'
+    //     }
+    // ]
+};
 
-User.init(userColumns, userOptions)
+User.init(userAttributes, userOptions);
 
-module.exports = {
-    User
-}
+module.exports = User;

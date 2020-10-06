@@ -1,12 +1,13 @@
 const path = require('path');
-const { Sequelize } = require('sequelize')
+const { Sequelize } = require('sequelize');
 
-const db = new Sequelize({
-    dialect: 'sqlite',
-    storage: path.join(__dirname, 'test.sqlite')
-})
+const config = require('./config')
+const { createUser } = require('./seeds/Users')
 
-async function  testDb() {
+const db = new Sequelize(config)
+
+
+async function testDB() {
     try {
       await db.authenticate();
       console.log('Connection has been established successfully.');
@@ -15,10 +16,15 @@ async function  testDb() {
     }
 }
 
+async function syncDB() {
+    await db.sync();
+    await createUser()
+}
 
 module.exports = {
     db,
-    testDb
+    testDB,
+    syncDB,
 };
 
 

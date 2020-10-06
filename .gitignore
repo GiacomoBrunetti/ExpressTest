@@ -1,4 +1,5 @@
 .idea
 
 
-./node-modules
+./node-modules/*
+node-modules/*
