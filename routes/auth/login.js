@@ -1,4 +1,4 @@
-const User = require('../../database/models/User')
+const User = require('../../database/models/User');
 
 async function login(req, res, next) {
     const {username, password} = req.body;
