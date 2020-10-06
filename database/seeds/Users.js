@@ -8,10 +8,13 @@ const defaults = {
 }
 
 const createUser = async () => {
-    await User.sync({ alter: true })
-    const user = User.findOne({where: { username: 'Ittenurb'}});
+    // await User.sync({ alter: true })
+    const user = await User.findOne({where: { username: 'Ittenurb'}});
+    console.log(user)
     if (!user) {
-        User.create(defaults)
+        console.log(`User not found`)
+        const user = await User.build(defaults)
+        await user.save()
     }
 };
 

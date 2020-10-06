@@ -7,9 +7,9 @@ const db = new Sequelize(config)
 
 const saltRounds = 8;
 
-const hashPassword = async raw => {
-    const salt = await bcrypt.genSalt(saltRounds);
-    return await bcrypt.hash(raw, salt);
+const hashPassword = raw => {
+    const salt =  bcrypt.genSaltSync(saltRounds);
+    return  bcrypt.hashSync(raw, salt);
 };
 
 
@@ -49,8 +49,8 @@ const userAttributes = {
     password: {
         type: DataTypes.STRING,
         allowNull: false,
-        async set(value) {
-          this.setDataValue('password', await hashPassword(value));
+        set(value) {
+          this.setDataValue('password', hashPassword(value));
         }
     },
     isActive: {

@@ -1,9 +1,7 @@
 const User = require('../../database/models/User')
 
 async function login(req, res, next) {
-    console.log(req.body)
     const {username, password} = req.body;
-    console.log(username)
     const user = await User.findOne({
         where: {
             username
@@ -14,11 +12,12 @@ async function login(req, res, next) {
     } else {
         const passwordMatch = await user.checkPassword(password);
         if (passwordMatch) {
-            res.sendStatus(201)
+            res.sendStatus(200)
         } else {
             res.sendStatus(401)
         }
     }
+    next()
 }
 
 module.exports = {
