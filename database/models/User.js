@@ -1,9 +1,9 @@
 const { Sequelize, Model, DataTypes } = require('sequelize');
 const bcrypt = require('bcrypt');
 
-const config = require('../config')
+const config = require('../config');
 
-const db = new Sequelize(config)
+const db = new Sequelize(config);
 
 const saltRounds = 8;
 
@@ -26,13 +26,7 @@ class User extends Model {
 }
 
 
-const userAttributes = {
-    id: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
-        unique: true,
-        primaryKey: true
-    },
+const userColumns = {
     username: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -62,14 +56,8 @@ const userAttributes = {
 const userOptions = {
     sequelize: db,
     tableName: 'users'
-    // indexes: [
-    //     {
-    //         unique: true,
-    //         field: 'username'
-    //     }
-    // ]
 };
 
-User.init(userAttributes, userOptions);
+User.init(userColumns, userOptions);
 
 module.exports = User;

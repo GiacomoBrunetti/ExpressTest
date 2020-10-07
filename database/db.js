@@ -1,9 +1,8 @@
 const { Sequelize } = require('sequelize');
 
-const config = require('./config')
-const { createUser } = require('./seeds/Users')
+const config = require('./config');
 
-const db = new Sequelize(config)
+const db = new Sequelize(config);
 
 
 async function testDB() {
@@ -17,7 +16,7 @@ async function testDB() {
 
 async function syncDB() {
     await db.sync();
-    await createUser()
+    console.log('database is synced.')
 }
 
 module.exports = {
